@@ -59,7 +59,7 @@ importers:
         version: 24.13.3(electron-builder-squirrel-windows@24.13.3)
       electron-vite:
         specifier: ^2.3.0
-        version: 2.3.0(vite@7.3.1(@types/node@20.19.30)(yaml@2.8.2))
+        version: 2.3.0(vite@5.4.21(@types/node@20.19.30))
       eslint:
         specifier: ^9.39.2
         version: 9.39.2
@@ -84,6 +84,9 @@ importers:
       typescript-eslint:
         specifier: ^8.53.0
         version: 8.53.0(eslint@9.39.2)(typescript@5.9.3)
+      vite:
+        specifier: ^5.4.21
+        version: 5.4.21(@types/node@20.19.30)
       vitest:
         specifier: ^4.0.17
         version: 4.0.17(@types/node@20.19.30)(yaml@2.8.2)
@@ -2432,6 +2435,37 @@ packages:
     resolution: {integrity: sha512-veufcmxri4e3XSrT0xwfUR7kguIkaxBeosDg00yDWhk49wdwkSUrvvsm7nc75e1PUyvIeZj6nS8VQRYz2/S4Xg==}
     engines: {node: '>=0.6.0'}
 
+  vite@5.4.21:
+    resolution: {integrity: sha512-o5a9xKjbtuhY6Bi5S3+HvbRERmouabWbyUcpXXUA1u+GNUKoROi9byOJ8M0nHbHYHkYICiMlqxkg1KkYmm25Sw==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^18.0.0 || >=20.0.0
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      sass-embedded: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+
   vite@7.3.1:
     resolution: {integrity: sha512-w+N7Hifpc3gRjZ63vYBXA56dvvRlNWRczTdmCBBa+CotUzAPf5b7YMdMR/8CQoeYE5LX3W4wj6RYTgonm1b9DA==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -3796,7 +3830,7 @@ snapshots:
 
   electron-to-chromium@1.5.267: {}
 
-  electron-vite@2.3.0(vite@7.3.1(@types/node@20.19.30)(yaml@2.8.2)):
+  electron-vite@2.3.0(vite@5.4.21(@types/node@20.19.30)):
     dependencies:
       '@babel/core': 7.28.6
       '@babel/plugin-transform-arrow-functions': 7.27.1(@babel/core@7.28.6)
@@ -3804,7 +3838,7 @@ snapshots:
       esbuild: 0.21.5
       magic-string: 0.30.21
       picocolors: 1.1.1
-      vite: 7.3.1(@types/node@20.19.30)(yaml@2.8.2)
+      vite: 5.4.21(@types/node@20.19.30)
     transitivePeerDependencies:
       - supports-color
 
@@ -4984,6 +5018,15 @@ snapshots:
       core-util-is: 1.0.2
       extsprintf: 1.4.1
     optional: true
+
+  vite@5.4.21(@types/node@20.19.30):
+    dependencies:
+      esbuild: 0.21.5
+      postcss: 8.5.6
+      rollup: 4.55.1
+    optionalDependencies:
+      '@types/node': 20.19.30
+      fsevents: 2.3.3
 
   vite@7.3.1(@types/node@20.19.30)(yaml@2.8.2):
     dependencies:
