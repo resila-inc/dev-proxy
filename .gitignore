@@ -1,0 +1,8 @@
+# Dependencies
+node_modules/
+
+# Certificates (generated locally with mkcert)
+certs/
+
+# Local configuration (contains environment-specific paths)
+config.yaml

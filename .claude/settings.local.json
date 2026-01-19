@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__plugin_serena_serena__list_dir",
+      "Bash(grep:*)",
+      "Bash(git -C /Users/mizuki/project/resila-inc/honya status --short)",
+      "Bash(git -C /Users/mizuki/project/resila-inc/pokeca-fun status --short)",
+      "Bash(git -C /Users/mizuki/project/resila-inc/pokecaq status --short)",
+      "Bash(git -C /Users/mizuki/project/resila-inc/recipe-stock status --short)",
+      "Bash(git -C /Users/mizuki/project/resila-inc/pokeca-fun diff docker-compose.yml)",
+      "Bash(git -C /Users/mizuki/project/resila-inc/pokecaq diff docker-compose.yml)",
+      "Bash(lsof:*)",
+      "Bash(sudo pfctl:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
+  }
+}
