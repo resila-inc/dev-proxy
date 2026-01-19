@@ -49,7 +49,12 @@ export function setupIpcHandlers(
       const certCheck = certManager.checkCertExists(config.base_domain)
       if (!certCheck.exists) {
         // 証明書がなければ生成（CA インストールも含む）
-        await certManager.ensureCert(config.base_domain)
+        try {
+          await certManager.ensureCert(config.base_domain)
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error)
+          throw new Error(`証明書の生成に失敗しました: ${message}`)
+        }
       }
     }
   })

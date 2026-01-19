@@ -77,7 +77,12 @@ export class CertManager {
    */
   async installCA(): Promise<void> {
     const mkcertPath = this.getMkcertPath()
-    await execFileAsync(mkcertPath, ['-install'])
+    try {
+      await execFileAsync(mkcertPath, ['-install'])
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      throw new Error(`CA のインストールに失敗しました: ${message}`)
+    }
   }
 
   /**
@@ -93,14 +98,19 @@ export class CertManager {
     const paths = this.getCertPaths(baseDomain)
 
     // mkcert でワイルドカード証明書を生成
-    await execFileAsync(mkcertPath, [`*.${baseDomain}`], {
-      cwd: this.certsDir,
-    })
+    try {
+      await execFileAsync(mkcertPath, [`*.${baseDomain}`], {
+        cwd: this.certsDir,
+      })
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      throw new Error(`証明書の生成コマンドが失敗しました: ${message}`)
+    }
 
     // mkcert の出力ファイル名を確認
     // mkcert は _wildcard.{domain}.pem と _wildcard.{domain}-key.pem を生成する
     if (!fs.existsSync(paths.certPath) || !fs.existsSync(paths.keyPath)) {
-      throw new Error(`証明書の生成に失敗しました: ${baseDomain}`)
+      throw new Error(`証明書ファイルが見つかりません: ${baseDomain}`)
     }
 
     return paths
