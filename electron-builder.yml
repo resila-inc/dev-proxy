@@ -1,4 +1,4 @@
-appId: com.example.dev-proxy
+appId: jp.resila.dev-proxy
 productName: dev-proxy
 directories:
   buildResources: resources
@@ -33,6 +33,7 @@ mac:
   hardenedRuntime: true
   gatekeeperAssess: false
 dmg:
+  artifactName: ${productName}-${version}-${arch}.${ext}
   contents:
     - x: 130
       y: 220
