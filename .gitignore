@@ -3,6 +3,7 @@ node_modules/
 
 # Claude Code local settings
 .claude/settings.local.json
+.claude/plans/
 
 # Serena
 .serena/
