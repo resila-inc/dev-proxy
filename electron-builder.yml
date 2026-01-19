@@ -6,8 +6,8 @@ directories:
 files:
   - "out/**/*"
 extraResources:
-  - from: certs
-    to: certs
+  - from: resources/bin
+    to: bin
     filter:
       - "**/*"
   - from: scripts

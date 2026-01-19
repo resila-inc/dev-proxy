@@ -1,14 +1,16 @@
 import { ipcMain, BrowserWindow, app } from 'electron'
 import type { ProxyServer } from './proxy-server.js'
 import type { AppStore } from './store.js'
-import type { HostConfig, PortCheckResult } from '../shared/types.js'
+import type { HostConfig, PortCheckResult, AppConfig } from '../shared/types.js'
 import { checkPortAvailable, findAvailablePort } from './port-utils.js'
+import { CertManager } from './cert-manager.js'
 
 export function setupIpcHandlers(
   proxyServer: ProxyServer,
   store: AppStore,
   getWindow: () => BrowserWindow | undefined
 ): void {
+  const certManager = new CertManager()
   // ホスト管理
   ipcMain.handle('hosts:get', () => {
     return store.getHosts()
@@ -31,15 +33,24 @@ export function setupIpcHandlers(
     return store.getConfig()
   })
 
-  ipcMain.handle('config:set', (_event, config) => {
+  ipcMain.handle('config:set', async (_event, config: Partial<AppConfig>) => {
     store.setConfig(config)
 
     // auto_launch設定が変更された場合、ログイン項目を更新
     if ('auto_launch' in config) {
       app.setLoginItemSettings({
-        openAtLogin: config.auto_launch,
+        openAtLogin: config.auto_launch ?? false,
         openAsHidden: true,
       })
+    }
+
+    // base_domain が変更された場合、証明書を生成
+    if ('base_domain' in config && config.base_domain) {
+      const certCheck = certManager.checkCertExists(config.base_domain)
+      if (!certCheck.exists) {
+        // 証明書がなければ生成（CA インストールも含む）
+        await certManager.ensureCert(config.base_domain)
+      }
     }
   })
 

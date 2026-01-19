@@ -39,6 +39,12 @@ export interface PortCheckResult {
   available: boolean
 }
 
+// プロキシステータス変更イベントのペイロード
+export interface ProxyStatusPayload {
+  status: ProxyStatus
+  error?: string
+}
+
 // IPC通信の型定義
 export interface IpcApi {
   // ホスト管理
@@ -55,9 +61,9 @@ export interface IpcApi {
   startProxy: () => Promise<void>
   stopProxy: () => Promise<void>
   restartProxy: () => Promise<void>
-  getProxyStatus: () => Promise<ProxyStatus>
+  getProxyStatus: () => Promise<ProxyStatusPayload>
   onProxyLog: (callback: (log: LogEntry) => void) => () => void
-  onProxyStatusChange: (callback: (status: ProxyStatus) => void) => () => void
+  onProxyStatusChange: (callback: (payload: ProxyStatusPayload) => void) => () => void
 
   // ポート関連
   checkPort: (port: number) => Promise<PortCheckResult>
