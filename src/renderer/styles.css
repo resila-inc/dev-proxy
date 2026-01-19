@@ -331,6 +331,31 @@ body {
   color: var(--text-secondary);
 }
 
+.hint.success {
+  color: var(--success);
+}
+
+.hint.error {
+  color: var(--error);
+}
+
+/* Port Input Group */
+.port-input-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.port-input-group input[type="number"] {
+  flex: 1;
+}
+
+.btn-secondary.btn-sm {
+  padding: 6px 10px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
 /* Logs */
 .filter-buttons {
   display: flex;

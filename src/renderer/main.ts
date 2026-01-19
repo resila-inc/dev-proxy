@@ -132,6 +132,9 @@ function setupHostModal(): void {
   const backdrop = hostModal.querySelector('.modal-backdrop')
   const subdomainInput = document.getElementById('host-subdomain') as HTMLInputElement
   const previewHint = document.getElementById('subdomain-preview') as HTMLParagraphElement
+  const portInput = document.getElementById('host-port') as HTMLInputElement
+  const suggestPortBtn = document.getElementById('suggest-port-btn')
+  const checkPortBtn = document.getElementById('check-port-btn')
 
   addBtn?.addEventListener('click', () => {
     openAddModal()
@@ -155,10 +158,65 @@ function setupHostModal(): void {
     }
   })
 
+  // Clear port status when port input changes
+  portInput?.addEventListener('input', () => {
+    clearPortStatus()
+  })
+
+  // Suggest available port
+  suggestPortBtn?.addEventListener('click', async () => {
+    try {
+      suggestPortBtn.textContent = '...'
+      const port = await window.api.suggestPort()
+      portInput.value = String(port)
+      showPortStatus(true, `Port ${port} is available`)
+    } catch {
+      showPortStatus(false, 'Failed to find available port')
+    } finally {
+      suggestPortBtn.textContent = 'Suggest'
+    }
+  })
+
+  // Check if port is available
+  checkPortBtn?.addEventListener('click', async () => {
+    const port = parseInt(portInput.value, 10)
+    if (isNaN(port) || port < 1 || port > 65535) {
+      showPortStatus(false, 'Please enter a valid port number (1-65535)')
+      return
+    }
+
+    try {
+      checkPortBtn.textContent = '...'
+      const result = await window.api.checkPort(port)
+      if (result.available) {
+        showPortStatus(true, `Port ${port} is available`)
+      } else {
+        showPortStatus(false, `Port ${port} is in use`)
+      }
+    } catch {
+      showPortStatus(false, 'Failed to check port')
+    } finally {
+      checkPortBtn.textContent = 'Check'
+    }
+  })
+
   hostForm.addEventListener('submit', async (e) => {
     e.preventDefault()
     await saveHost()
   })
+}
+
+function showPortStatus(success: boolean, message: string): void {
+  const portStatusHint = document.getElementById('port-status') as HTMLParagraphElement
+  portStatusHint.textContent = message
+  portStatusHint.classList.remove('success', 'error')
+  portStatusHint.classList.add(success ? 'success' : 'error')
+}
+
+function clearPortStatus(): void {
+  const portStatusHint = document.getElementById('port-status') as HTMLParagraphElement
+  portStatusHint.textContent = ''
+  portStatusHint.classList.remove('success', 'error')
 }
 
 function openAddModal(): void {
@@ -167,6 +225,7 @@ function openAddModal(): void {
   hostForm.reset()
   ;(document.getElementById('host-enabled') as HTMLInputElement).checked = true
   ;(document.getElementById('subdomain-preview') as HTMLParagraphElement).textContent = ''
+  clearPortStatus()
   hostModal.classList.remove('hidden')
 }
 
@@ -181,6 +240,7 @@ function openEditModal(id: string): void {
   ;(document.getElementById('host-enabled') as HTMLInputElement).checked = host.enabled
   ;(document.getElementById('subdomain-preview') as HTMLParagraphElement).textContent =
     `${host.subdomain}.${currentConfig?.base_domain ?? 'localhost'}`
+  clearPortStatus()
   hostModal.classList.remove('hidden')
 }
 
@@ -285,6 +345,7 @@ function renderSettings(): void {
   ;(document.getElementById('https-port') as HTMLInputElement).value = String(
     currentConfig.https_port
   )
+  ;(document.getElementById('auto-launch') as HTMLInputElement).checked = currentConfig.auto_launch
 }
 
 function setupSettings(): void {
@@ -297,13 +358,14 @@ function setupSettings(): void {
       (document.getElementById('https-port') as HTMLInputElement).value,
       10
     )
+    const auto_launch = (document.getElementById('auto-launch') as HTMLInputElement).checked
 
     if (!base_domain || isNaN(http_port) || isNaN(https_port)) {
       alert('Please fill in all fields correctly.')
       return
     }
 
-    await window.api.setConfig({ base_domain, http_port, https_port })
+    await window.api.setConfig({ base_domain, http_port, https_port, auto_launch })
     currentConfig = await window.api.getConfig()
 
     // Restart proxy to apply new settings

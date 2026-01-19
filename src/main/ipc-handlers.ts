@@ -1,7 +1,8 @@
-import { ipcMain, BrowserWindow } from 'electron'
+import { ipcMain, BrowserWindow, app } from 'electron'
 import type { ProxyServer } from './proxy-server.js'
 import type { AppStore } from './store.js'
-import type { HostConfig } from '../shared/types.js'
+import type { HostConfig, PortCheckResult } from '../shared/types.js'
+import { checkPortAvailable, findAvailablePort } from './port-utils.js'
 
 export function setupIpcHandlers(
   proxyServer: ProxyServer,
@@ -32,6 +33,14 @@ export function setupIpcHandlers(
 
   ipcMain.handle('config:set', (_event, config) => {
     store.setConfig(config)
+
+    // auto_launch設定が変更された場合、ログイン項目を更新
+    if ('auto_launch' in config) {
+      app.setLoginItemSettings({
+        openAtLogin: config.auto_launch,
+        openAsHidden: true,
+      })
+    }
   })
 
   // プロキシ
@@ -49,6 +58,16 @@ export function setupIpcHandlers(
 
   ipcMain.handle('proxy:status', () => {
     return proxyServer.getStatus()
+  })
+
+  // ポート関連
+  ipcMain.handle('port:check', async (_event, port: number): Promise<PortCheckResult> => {
+    const available = await checkPortAvailable(port)
+    return { port, available }
+  })
+
+  ipcMain.handle('port:suggest', async (): Promise<number> => {
+    return findAvailablePort()
   })
 
   // ウィンドウ操作
