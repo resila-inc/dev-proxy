@@ -33,6 +33,12 @@ export interface LogEntry {
   target?: string
 }
 
+// ポート確認結果
+export interface PortCheckResult {
+  port: number
+  available: boolean
+}
+
 // IPC通信の型定義
 export interface IpcApi {
   // ホスト管理
@@ -52,6 +58,10 @@ export interface IpcApi {
   getProxyStatus: () => Promise<ProxyStatus>
   onProxyLog: (callback: (log: LogEntry) => void) => () => void
   onProxyStatusChange: (callback: (status: ProxyStatus) => void) => () => void
+
+  // ポート関連
+  checkPort: (port: number) => Promise<PortCheckResult>
+  suggestPort: () => Promise<number>
 
   // ウィンドウ
   showWindow: () => void
