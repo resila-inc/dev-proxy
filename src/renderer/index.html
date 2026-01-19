@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+  <title>dev-proxy</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- ヘッダー -->
+    <header class="header">
+      <h1 class="title">dev-proxy</h1>
+      <div class="status-badge" id="status-badge">
+        <span class="status-dot"></span>
+        <span class="status-text">Stopped</span>
+      </div>
+    </header>
+
+    <!-- タブ -->
+    <nav class="tabs">
+      <button class="tab active" data-tab="hosts">Hosts</button>
+      <button class="tab" data-tab="logs">Logs</button>
+      <button class="tab" data-tab="settings">Settings</button>
+    </nav>
+
+    <!-- Hosts タブ -->
+    <div id="hosts-panel" class="panel active">
+      <div class="panel-header">
+        <span class="panel-title">Registered Hosts</span>
+        <button id="add-host-btn" class="btn-primary btn-sm">+ Add</button>
+      </div>
+      <div id="hosts-list" class="hosts-list">
+        <p class="empty-message">No hosts registered</p>
+      </div>
+    </div>
+
+    <!-- Logs タブ -->
+    <div id="logs-panel" class="panel">
+      <div class="panel-header">
+        <div class="filter-buttons">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="http">HTTP</button>
+          <button class="filter-btn" data-filter="ws">WS</button>
+          <button class="filter-btn" data-filter="error">Error</button>
+        </div>
+        <button id="clear-logs-btn" class="btn-text">Clear</button>
+      </div>
+      <div id="logs-container" class="logs-container">
+        <p class="empty-message">No logs yet</p>
+      </div>
+    </div>
+
+    <!-- Settings タブ -->
+    <div id="settings-panel" class="panel">
+      <div class="form-group">
+        <label for="base-domain">Base Domain</label>
+        <input type="text" id="base-domain" placeholder="dev.resila.jp">
+        <p class="hint">Hosts will be accessible at {subdomain}.{base_domain}</p>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group half">
+          <label for="http-port">HTTP Port</label>
+          <input type="number" id="http-port" placeholder="8080">
+        </div>
+        <div class="form-group half">
+          <label for="https-port">HTTPS Port</label>
+          <input type="number" id="https-port" placeholder="8443">
+        </div>
+      </div>
+
+      <button id="save-settings-btn" class="btn-primary">Save Settings</button>
+    </div>
+
+    <!-- ホスト追加/編集モーダル -->
+    <div id="host-modal" class="modal hidden">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <h2 class="modal-title" id="modal-title">Add Host</h2>
+        <form id="host-form">
+          <input type="hidden" id="host-id">
+          <div class="form-group">
+            <label for="host-subdomain">Subdomain</label>
+            <input type="text" id="host-subdomain" placeholder="myapp" required>
+            <p class="hint" id="subdomain-preview"></p>
+          </div>
+          <div class="form-group">
+            <label for="host-port">Port</label>
+            <input type="number" id="host-port" placeholder="3000" required>
+          </div>
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="host-enabled" checked>
+              <span>Enabled</span>
+            </label>
+          </div>
+          <div class="modal-actions">
+            <button type="button" id="cancel-modal-btn" class="btn-secondary">Cancel</button>
+            <button type="submit" class="btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>

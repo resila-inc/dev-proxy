@@ -6,3 +6,11 @@ certs/
 
 # Local configuration (contains environment-specific paths)
 config.yaml
+
+# Build output
+out/
+dist/
+
+# Electron
+*.asar
+*.asar.unpacked

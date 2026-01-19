@@ -1,0 +1,42 @@
+appId: jp.resila.dev-proxy
+productName: dev-proxy
+directories:
+  buildResources: resources
+  output: dist
+files:
+  - "out/**/*"
+extraResources:
+  - from: certs
+    to: certs
+    filter:
+      - "**/*"
+  - from: scripts
+    to: scripts
+    filter:
+      - "**/*"
+  - from: config.yaml
+    to: config.yaml
+  - from: resources/iconTemplate.png
+    to: iconTemplate.png
+  - from: resources/iconTemplate@2x.png
+    to: iconTemplate@2x.png
+mac:
+  category: public.app-category.developer-tools
+  icon: resources/icon.icns
+  target:
+    - target: dmg
+      arch:
+        - arm64
+        - x64
+  entitlements: entitlements.mac.plist
+  entitlementsInherit: entitlements.mac.plist
+  hardenedRuntime: true
+  gatekeeperAssess: false
+dmg:
+  contents:
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications
