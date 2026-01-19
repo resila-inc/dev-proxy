@@ -90,7 +90,7 @@ function renderHosts(): void {
     <div class="host-item ${host.enabled ? '' : 'disabled'}" data-id="${host.id}">
       <div class="host-info">
         <div class="host-subdomain">${escapeHtml(host.subdomain)}</div>
-        <div class="host-url">${escapeHtml(host.subdomain)}.${currentConfig?.base_domain ?? 'dev.resila.jp'}</div>
+        <div class="host-url">${escapeHtml(host.subdomain)}.${currentConfig?.base_domain ?? 'localhost'}</div>
       </div>
       <span class="host-port">:${host.port}</span>
       <div class="host-actions">
@@ -149,7 +149,7 @@ function setupHostModal(): void {
   subdomainInput?.addEventListener('input', () => {
     const subdomain = subdomainInput.value.trim()
     if (subdomain) {
-      previewHint.textContent = `${subdomain}.${currentConfig?.base_domain ?? 'dev.resila.jp'}`
+      previewHint.textContent = `${subdomain}.${currentConfig?.base_domain ?? 'localhost'}`
     } else {
       previewHint.textContent = ''
     }
@@ -180,7 +180,7 @@ function openEditModal(id: string): void {
   ;(document.getElementById('host-port') as HTMLInputElement).value = String(host.port)
   ;(document.getElementById('host-enabled') as HTMLInputElement).checked = host.enabled
   ;(document.getElementById('subdomain-preview') as HTMLParagraphElement).textContent =
-    `${host.subdomain}.${currentConfig?.base_domain ?? 'dev.resila.jp'}`
+    `${host.subdomain}.${currentConfig?.base_domain ?? 'localhost'}`
   hostModal.classList.remove('hidden')
 }
 

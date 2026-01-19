@@ -1,4 +1,4 @@
-appId: jp.resila.dev-proxy
+appId: com.example.dev-proxy
 productName: dev-proxy
 directories:
   buildResources: resources

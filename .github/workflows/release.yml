@@ -32,8 +32,8 @@ jobs:
       - name: Generate certificates for build
         run: |
           mkdir -p certs
-          # ビルド用のダミー証明書を生成（実際の使用時はユーザーがmkcertで生成）
-          openssl req -x509 -newkey rsa:4096 -keyout certs/_wildcard.dev.resila.jp-key.pem -out certs/_wildcard.dev.resila.jp.pem -days 365 -nodes -subj "/CN=*.dev.resila.jp"
+          # Generate dummy certificates for build (users should generate their own with mkcert)
+          openssl req -x509 -newkey rsa:4096 -keyout certs/_wildcard.localhost-key.pem -out certs/_wildcard.localhost.pem -days 365 -nodes -subj "/CN=*.localhost"
 
       - name: Build macOS app
         run: pnpm package:mac

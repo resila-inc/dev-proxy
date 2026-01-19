@@ -2,7 +2,7 @@ import Store from 'electron-store'
 import type { StoreSchema, HostConfig, AppConfig } from '../shared/types.js'
 
 const DEFAULT_CONFIG: AppConfig = {
-  base_domain: 'dev.resila.jp',
+  base_domain: 'localhost',
   http_port: 8080,
   https_port: 8443,
   auto_launch: false,

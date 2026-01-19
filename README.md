@@ -29,11 +29,11 @@ cd dev-proxy
 # Install dependencies
 pnpm install
 
-# Generate certificates (required)
+# Generate certificates (replace with your domain)
 brew install mkcert
 mkcert -install
 mkdir -p certs && cd certs
-mkcert "*.dev.resila.jp"
+mkcert "*.your-domain.local"
 cd ..
 
 # Run in development mode
@@ -51,7 +51,7 @@ pnpm package:mac
 brew install mkcert
 mkcert -install
 cd certs
-mkcert "*.dev.resila.jp"
+mkcert "*.your-domain.local"
 ```
 
 ### 2. Enable Port Forwarding
@@ -72,21 +72,26 @@ To disable:
 pnpm pf:disable
 ```
 
-### 3. Configure Hosts
+### 3. Configure Settings
 
 1. Click the menubar icon and select "Open Console"
-2. Go to the "Hosts" tab
-3. Click "+ Add" to register a host:
+2. Go to the "Settings" tab
+3. Set your **Base Domain** (must match the certificate you generated)
+
+### 4. Configure Hosts
+
+1. Go to the "Hosts" tab
+2. Click "+ Add" to register a host:
    - **Subdomain**: e.g., `myapp`
    - **Port**: e.g., `3000`
    - **Enabled**: Toggle on/off
 
-### 4. Access Your App
+### 5. Access Your App
 
-With a host configured as `myapp` on port `3000`:
+With a host configured as `myapp` on port `3000` and base domain `your-domain.local`:
 
 ```
-https://myapp.dev.resila.jp → http://127.0.0.1:3000
+https://myapp.your-domain.local → http://127.0.0.1:3000
 ```
 
 ## Configuration
@@ -95,7 +100,7 @@ Settings are stored in `~/Library/Application Support/dev-proxy/dev-proxy-data.j
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| Base Domain | `dev.resila.jp` | Wildcard domain for routing |
+| Base Domain | (user configured) | Wildcard domain for routing |
 | HTTP Port | `8080` | HTTP server port |
 | HTTPS Port | `8443` | HTTPS server port |
 

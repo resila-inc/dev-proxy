@@ -2,68 +2,70 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## プロジェクト概要
+## Project Overview
 
-dev-proxyは、macOS向けのローカル開発用リバースプロキシサーバー。サブドメインベースで各プロジェクトにリクエストを振り分ける。
+dev-proxy is a macOS menubar application for local development reverse proxy. It routes requests to local development servers based on subdomains.
 
-例: `https://honya.dev.resila.jp` → `localhost:3000`（honyaプロジェクトのポート）
+Example: `https://myapp.{base_domain}` → `localhost:3000`
 
-## コマンド
+## Commands
 
 ```bash
-# 開発サーバー起動（ファイル変更を監視）
+# Start development server
 pnpm dev
 
-# プロダクションモードで起動
-pnpm start
+# Build for production
+pnpm build
 
-# ポートフォワーディング有効化（80→8080, 443→8443、要sudo）
+# Package for macOS
+pnpm package:mac
+
+# Enable port forwarding (80→8080, 443→8443, requires sudo)
 pnpm pf:enable
 
-# ポートフォワーディング無効化
+# Disable port forwarding
 pnpm pf:disable
+
+# Lint
+pnpm lint
+
+# Format
+pnpm format
+
+# Test
+pnpm test
 ```
 
-## 初期セットアップ
-
-1. mkcertで証明書を生成:
-   ```bash
-   brew install mkcert
-   mkcert -install
-   cd certs
-   mkcert "*.dev.resila.jp"
-   ```
-
-2. ポートフォワーディングを有効化:
-   ```bash
-   pnpm pf:enable
-   ```
-
-3. プロキシサーバーを起動:
-   ```bash
-   pnpm dev
-   ```
-
-## アーキテクチャ
+## Architecture
 
 ```
-src/index.ts       # メインのプロキシサーバー実装
-config.yaml        # 設定ファイル（ベースドメイン、プロジェクトディレクトリ等）
-scripts/           # pfctlによるポートフォワーディング制御スクリプト
-certs/             # mkcertで生成したワイルドカード証明書
+src/
+├── main/              # Electron main process
+│   ├── index.ts       # App entry, tray, window management
+│   ├── proxy-server.ts # HTTP/HTTPS proxy server
+│   ├── store.ts       # Host & config persistence (electron-store)
+│   └── ipc-handlers.ts # IPC communication handlers
+├── renderer/          # Electron renderer process
+│   ├── index.html     # Main UI
+│   ├── main.ts        # UI logic
+│   ├── styles.css     # Styles
+│   └── preload.ts     # Context bridge
+└── shared/
+    └── types.ts       # Shared type definitions
 ```
 
-## 動作の流れ
+## How It Works
 
-1. HTTPリクエスト（:8080）はHTTPSにリダイレクト
-2. HTTPSリクエスト（:8443）のHostヘッダーからサブドメインを抽出
-3. サブドメイン名と同名のディレクトリを`projects_dir`から探索
-4. そのディレクトリの`.env`ファイルから`PORT`を読み取り
-5. `localhost:{PORT}`にプロキシ転送（WebSocketも対応）
+1. HTTP requests (:8080) are redirected to HTTPS
+2. HTTPS requests (:8443) extract subdomain from Host header
+3. Subdomain is looked up in registered hosts
+4. Request is proxied to `127.0.0.1:{port}` (WebSocket supported)
 
-## config.yaml 設定項目
+## Configuration
 
-- `base_domain`: ベースドメイン（例: dev.resila.jp）
-- `projects_dir`: プロジェクトディレクトリのパス
-- `env_key`: ポート番号を読み取る.envのキー名
-- `default_port`: .envが見つからない場合のデフォルトポート
+Settings are stored in `~/Library/Application Support/dev-proxy/dev-proxy-data.json`
+
+- `base_domain`: Wildcard domain for routing (user configured)
+- `http_port`: HTTP server port (default: 8080)
+- `https_port`: HTTPS server port (default: 8443)
+- `hosts`: Array of registered host configurations
