@@ -33,7 +33,7 @@ jobs:
         run: |
           mkdir -p certs
           # Generate dummy certificates for build (users should generate their own with mkcert)
-          openssl req -x509 -newkey rsa:4096 -keyout certs/_wildcard.localhost-key.pem -out certs/_wildcard.localhost.pem -days 365 -nodes -subj "/CN=*.localhost"
+          openssl req -x509 -newkey rsa:4096 -keyout certs/_wildcard.dev.example.com-key.pem -out certs/_wildcard.dev.example.com.pem -days 365 -nodes -subj "/CN=*.dev.example.com"
 
       - name: Build macOS app
         run: pnpm package:mac

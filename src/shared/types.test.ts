@@ -18,13 +18,13 @@ describe('types', () => {
 
   it('AppConfig should have required fields', () => {
     const config: AppConfig = {
-      base_domain: 'example.local',
+      base_domain: 'dev.example.com',
       http_port: 8080,
       https_port: 8443,
       auto_launch: false,
     }
 
-    expect(config.base_domain).toBe('example.local')
+    expect(config.base_domain).toBe('dev.example.com')
     expect(config.http_port).toBe(8080)
     expect(config.https_port).toBe(8443)
     expect(config.auto_launch).toBe(false)

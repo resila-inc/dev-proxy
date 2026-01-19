@@ -33,7 +33,7 @@ pnpm install
 brew install mkcert
 mkcert -install
 mkdir -p certs && cd certs
-mkcert "*.your-domain.local"
+mkcert "*.dev.example.com"
 cd ..
 
 # Run in development mode
@@ -51,7 +51,7 @@ pnpm package:mac
 brew install mkcert
 mkcert -install
 cd certs
-mkcert "*.your-domain.local"
+mkcert "*.dev.example.com"
 ```
 
 ### 2. Enable Port Forwarding
@@ -88,10 +88,10 @@ pnpm pf:disable
 
 ### 5. Access Your App
 
-With a host configured as `myapp` on port `3000` and base domain `your-domain.local`:
+With a host configured as `myapp` on port `3000` and base domain `dev.example.com`:
 
 ```
-https://myapp.your-domain.local → http://127.0.0.1:3000
+https://myapp.dev.example.com → http://127.0.0.1:3000
 ```
 
 ## Configuration
