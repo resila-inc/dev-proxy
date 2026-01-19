@@ -13,11 +13,22 @@ A macOS menubar application for local development reverse proxy. Routes requests
 
 ## Installation
 
-### From Release
+### Quick Install (Recommended)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/resila-inc/dev-proxy/main/install.sh | bash
+```
+
+This will download and install the latest version to `/Applications`.
+
+### Manual Install
 
 1. Download the latest DMG from [Releases](https://github.com/resila-inc/dev-proxy/releases)
 2. Drag `dev-proxy.app` to Applications
-3. Right-click and select "Open" (required for unsigned apps)
+3. Remove quarantine attribute:
+   ```bash
+   xattr -cr /Applications/dev-proxy.app
+   ```
 
 ### From Source
 
