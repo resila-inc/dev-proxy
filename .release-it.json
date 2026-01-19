@@ -4,19 +4,18 @@
     "tagName": "v${version}",
     "tagAnnotation": "Release v${version}",
     "requireBranch": "main",
-    "requireCleanWorkingDir": true
+    "requireCleanWorkingDir": true,
+    "push": true,
+    "pushArgs": ["--follow-tags"]
   },
   "npm": {
     "publish": false
   },
   "github": {
-    "release": true,
-    "releaseName": "v${version}",
-    "assets": ["dist/*.dmg"]
+    "release": false
   },
   "hooks": {
-    "before:init": ["pnpm lint", "pnpm test"],
-    "after:bump": ["pnpm build && pnpm package:mac"]
+    "before:init": ["pnpm lint", "pnpm test"]
   },
   "plugins": {
     "@release-it/keep-a-changelog": {

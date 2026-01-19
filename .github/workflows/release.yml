@@ -1,14 +1,15 @@
-name: Build and Release
+name: Release
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - 'v*'
 
 permissions:
   contents: write
 
 jobs:
-  build:
+  release:
     runs-on: macos-latest
 
     steps:
@@ -16,9 +17,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -32,7 +33,6 @@ jobs:
       - name: Generate certificates for build
         run: |
           mkdir -p certs
-          # Generate dummy certificates for build (users should generate their own with mkcert)
           openssl req -x509 -newkey rsa:4096 -keyout certs/_wildcard.dev.example.com-key.pem -out certs/_wildcard.dev.example.com.pem -days 365 -nodes -subj "/CN=*.dev.example.com"
 
       - name: Build macOS app
@@ -40,11 +40,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload arm64 DMG to release
-        uses: softprops/action-gh-release@v1
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             dist/*.dmg
-            dist/*.dmg.blockmap
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
