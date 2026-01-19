@@ -91,6 +91,22 @@ body {
   background-color: var(--error);
 }
 
+/* Error Message */
+.error-message {
+  padding: 12px 20px;
+  background-color: rgba(241, 76, 76, 0.15);
+  border-bottom: 1px solid var(--error);
+  color: var(--error);
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.error-message.hidden {
+  display: none;
+}
+
 /* Tabs */
 .tabs {
   display: flex;

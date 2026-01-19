@@ -2,7 +2,7 @@ import { contextBridge, ipcRenderer } from 'electron'
 import type {
   IpcApi,
   LogEntry,
-  ProxyStatus,
+  ProxyStatusPayload,
   HostConfig,
   AppConfig,
   PortCheckResult,
@@ -30,8 +30,9 @@ const api: IpcApi = {
     ipcRenderer.on('proxy:log', handler)
     return () => ipcRenderer.removeListener('proxy:log', handler)
   },
-  onProxyStatusChange: (callback: (status: ProxyStatus) => void) => {
-    const handler = (_event: Electron.IpcRendererEvent, status: ProxyStatus) => callback(status)
+  onProxyStatusChange: (callback: (payload: ProxyStatusPayload) => void) => {
+    const handler = (_event: Electron.IpcRendererEvent, payload: ProxyStatusPayload) =>
+      callback(payload)
     ipcRenderer.on('proxy:status', handler)
     return () => ipcRenderer.removeListener('proxy:status', handler)
   },

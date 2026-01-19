@@ -1,4 +1,11 @@
-import type { IpcApi, HostConfig, LogEntry, ProxyStatus, AppConfig } from '../shared/types.js'
+import type {
+  IpcApi,
+  HostConfig,
+  LogEntry,
+  ProxyStatus,
+  ProxyStatusPayload,
+  AppConfig,
+} from '../shared/types.js'
 
 declare global {
   interface Window {
@@ -43,8 +50,8 @@ async function init(): Promise<void> {
     addLog(log)
   })
 
-  window.api.onProxyStatusChange((status) => {
-    updateStatusBadge(status)
+  window.api.onProxyStatusChange((payload) => {
+    updateStatusBadge(payload)
   })
 }
 
@@ -376,20 +383,50 @@ function setupSettings(): void {
 
 // Status
 async function updateStatus(): Promise<void> {
-  const status = await window.api.getProxyStatus()
-  updateStatusBadge(status)
+  const payload = await window.api.getProxyStatus()
+  updateStatusBadge(payload)
 }
 
-function updateStatusBadge(status: ProxyStatus): void {
+function updateStatusBadge(payload: ProxyStatusPayload): void {
+  const { status, error } = payload
+
   statusBadge.classList.remove('running', 'stopped', 'error')
   statusBadge.classList.add(status)
 
-  const statusLabels: Record<ProxyStatus, string> = {
-    running: 'Running',
-    stopped: 'Stopped',
-    error: 'Error',
+  if (status === 'error' && error) {
+    statusText.textContent = 'Error'
+    statusBadge.title = error
+    showErrorMessage(error)
+  } else {
+    const statusLabels: Record<ProxyStatus, string> = {
+      running: 'Running',
+      stopped: 'Stopped',
+      error: 'Error',
+    }
+    statusText.textContent = statusLabels[status]
+    statusBadge.title = ''
+    hideErrorMessage()
   }
-  statusText.textContent = statusLabels[status]
+}
+
+function showErrorMessage(message: string): void {
+  let errorContainer = document.getElementById('error-message')
+  if (!errorContainer) {
+    errorContainer = document.createElement('div')
+    errorContainer.id = 'error-message'
+    errorContainer.className = 'error-message'
+    const header = document.querySelector('.header')
+    header?.insertAdjacentElement('afterend', errorContainer)
+  }
+  errorContainer.textContent = message
+  errorContainer.classList.remove('hidden')
+}
+
+function hideErrorMessage(): void {
+  const errorContainer = document.getElementById('error-message')
+  if (errorContainer) {
+    errorContainer.classList.add('hidden')
+  }
 }
 
 // Utilities
