@@ -1,4 +1,4 @@
-import { ipcMain, BrowserWindow } from 'electron'
+import { ipcMain, BrowserWindow, app } from 'electron'
 import type { ProxyServer } from './proxy-server.js'
 import type { AppStore } from './store.js'
 import type { HostConfig } from '../shared/types.js'
@@ -32,6 +32,14 @@ export function setupIpcHandlers(
 
   ipcMain.handle('config:set', (_event, config) => {
     store.setConfig(config)
+
+    // auto_launch設定が変更された場合、ログイン項目を更新
+    if ('auto_launch' in config) {
+      app.setLoginItemSettings({
+        openAtLogin: config.auto_launch,
+        openAsHidden: true,
+      })
+    }
   })
 
   // プロキシ

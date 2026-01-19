@@ -285,6 +285,7 @@ function renderSettings(): void {
   ;(document.getElementById('https-port') as HTMLInputElement).value = String(
     currentConfig.https_port
   )
+  ;(document.getElementById('auto-launch') as HTMLInputElement).checked = currentConfig.auto_launch
 }
 
 function setupSettings(): void {
@@ -297,13 +298,14 @@ function setupSettings(): void {
       (document.getElementById('https-port') as HTMLInputElement).value,
       10
     )
+    const auto_launch = (document.getElementById('auto-launch') as HTMLInputElement).checked
 
     if (!base_domain || isNaN(http_port) || isNaN(https_port)) {
       alert('Please fill in all fields correctly.')
       return
     }
 
-    await window.api.setConfig({ base_domain, http_port, https_port })
+    await window.api.setConfig({ base_domain, http_port, https_port, auto_launch })
     currentConfig = await window.api.getConfig()
 
     // Restart proxy to apply new settings
