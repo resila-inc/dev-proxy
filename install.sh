@@ -61,6 +61,13 @@ info "Mounting DMG..."
 mkdir -p "$MOUNT_POINT"
 hdiutil attach "$DMG_PATH" -mountpoint "$MOUNT_POINT" -nobrowse -quiet
 
+# Check if app is running
+if pgrep -f "$APP_NAME.app" > /dev/null; then
+    warn "$APP_NAME is currently running. Attempting to quit..."
+    osascript -e "quit app \"$APP_NAME\"" 2>/dev/null || true
+    sleep 2
+fi
+
 # Check if app already exists
 if [[ -d "$INSTALL_DIR/$APP_NAME.app" ]]; then
     warn "Existing installation found. Removing..."
