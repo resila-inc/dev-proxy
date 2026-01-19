@@ -6,7 +6,7 @@ import { EventEmitter } from 'node:events'
 import { app } from 'electron'
 import httpProxy from 'http-proxy'
 import type { AppStore } from './store.js'
-import type { LogEntry, ProxyStatus, AppConfig } from '../shared/types.js'
+import type { LogEntry, ProxyStatus } from '../shared/types.js'
 
 export class ProxyServer extends EventEmitter {
   private proxy: httpProxy | null = null
@@ -45,10 +45,7 @@ export class ProxyServer extends EventEmitter {
     this.emit('status', status)
   }
 
-  private handleRequest = (
-    req: http.IncomingMessage,
-    res: http.ServerResponse
-  ): void => {
+  private handleRequest = (req: http.IncomingMessage, res: http.ServerResponse): void => {
     const config = this.store.getConfig()
     const host = req.headers.host || ''
     const subdomain = host.replace(`.${config.base_domain}`, '')
@@ -77,7 +74,7 @@ export class ProxyServer extends EventEmitter {
 
   private handleUpgrade = (
     req: http.IncomingMessage,
-    socket: any,
+    socket: import('node:stream').Duplex,
     head: Buffer
   ): void => {
     const config = this.store.getConfig()
@@ -102,10 +99,7 @@ export class ProxyServer extends EventEmitter {
     this.proxy?.ws(req, socket, head, { target })
   }
 
-  private handleHttpRedirect = (
-    req: http.IncomingMessage,
-    res: http.ServerResponse
-  ): void => {
+  private handleHttpRedirect = (req: http.IncomingMessage, res: http.ServerResponse): void => {
     const host = req.headers.host || ''
     const location = `https://${host}${req.url}`
     res.writeHead(301, { Location: location })
@@ -121,16 +115,10 @@ export class ProxyServer extends EventEmitter {
 
     try {
       // 証明書パスの解決
-      const resourcesPath = app.isPackaged
-        ? process.resourcesPath
-        : app.getAppPath()
+      const resourcesPath = app.isPackaged ? process.resourcesPath : app.getAppPath()
 
       const certFileName = `_wildcard.${config.base_domain}`
-      const certKeyPath = path.join(
-        resourcesPath,
-        'certs',
-        `${certFileName}-key.pem`
-      )
+      const certKeyPath = path.join(resourcesPath, 'certs', `${certFileName}-key.pem`)
       const certPath = path.join(resourcesPath, 'certs', `${certFileName}.pem`)
 
       if (!fs.existsSync(certKeyPath) || !fs.existsSync(certPath)) {
@@ -183,10 +171,7 @@ export class ProxyServer extends EventEmitter {
       })
 
       this.setStatus('running')
-      this.emitLog(
-        'info',
-        `Proxy started. HTTP:${config.http_port} HTTPS:${config.https_port}`
-      )
+      this.emitLog('info', `Proxy started. HTTP:${config.http_port} HTTPS:${config.https_port}`)
     } catch (error) {
       this.setStatus('error')
       const message = error instanceof Error ? error.message : String(error)

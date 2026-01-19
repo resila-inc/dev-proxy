@@ -292,10 +292,7 @@ function setupSettings(): void {
 
   saveBtn?.addEventListener('click', async () => {
     const base_domain = (document.getElementById('base-domain') as HTMLInputElement).value.trim()
-    const http_port = parseInt(
-      (document.getElementById('http-port') as HTMLInputElement).value,
-      10
-    )
+    const http_port = parseInt((document.getElementById('http-port') as HTMLInputElement).value, 10)
     const https_port = parseInt(
       (document.getElementById('https-port') as HTMLInputElement).value,
       10

@@ -17,12 +17,9 @@ export function setupIpcHandlers(
     return store.addHost(host)
   })
 
-  ipcMain.handle(
-    'hosts:update',
-    (_event, id: string, updates: Partial<HostConfig>) => {
-      return store.updateHost(id, updates)
-    }
-  )
+  ipcMain.handle('hosts:update', (_event, id: string, updates: Partial<HostConfig>) => {
+    return store.updateHost(id, updates)
+  })
 
   ipcMain.handle('hosts:delete', (_event, id: string) => {
     store.deleteHost(id)
