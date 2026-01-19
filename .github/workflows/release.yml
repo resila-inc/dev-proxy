@@ -1,0 +1,47 @@
+name: Build and Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate certificates for build
+        run: |
+          mkdir -p certs
+          # ビルド用のダミー証明書を生成（実際の使用時はユーザーがmkcertで生成）
+          openssl req -x509 -newkey rsa:4096 -keyout certs/_wildcard.dev.resila.jp-key.pem -out certs/_wildcard.dev.resila.jp.pem -days 365 -nodes -subj "/CN=*.dev.resila.jp"
+
+      - name: Build macOS app
+        run: pnpm package:mac
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload arm64 DMG to release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/*.dmg
+            dist/*.dmg.blockmap
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
