@@ -28,8 +28,8 @@ const modalTitle = document.getElementById('modal-title') as HTMLHeadingElement
 // Initialize
 async function init(): Promise<void> {
   // Load initial data
-  await loadHosts()
   await loadConfig()
+  await loadHosts()
   await updateStatus()
 
   // Setup event listeners
