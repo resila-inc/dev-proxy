@@ -3,6 +3,7 @@ import { app, BrowserWindow, Menu, Tray, nativeImage } from 'electron'
 import { AppStore } from './store.js'
 import { ProxyServer } from './proxy-server.js'
 import { setupIpcHandlers } from './ipc-handlers.js'
+import { PortForwardManager } from './port-forward-manager.js'
 
 // シングルインスタンス
 const gotTheLock = app.requestSingleInstanceLock()
@@ -41,9 +42,7 @@ if (!gotTheLock) {
       }
     })
 
-    const indexPath = app.isPackaged
-      ? path.join(__dirname, '../renderer/index.html')
-      : path.join(__dirname, '../renderer/index.html')
+    const indexPath = path.join(__dirname, '../renderer/index.html')
 
     mainWindow.loadFile(indexPath)
 
@@ -133,6 +132,16 @@ if (!gotTheLock) {
     // UI作成
     createWindow()
     createTray()
+
+    // Port Forwarding設定
+    const config = store.getConfig()
+    const portForwardManager = new PortForwardManager({
+      http_port: config.http_port,
+      https_port: config.https_port,
+    })
+    portForwardManager.ensurePortForwarding().catch((err) => {
+      console.error('Failed to setup port forwarding:', err)
+    })
 
     // プロキシ自動起動
     proxyServer.start().catch((err) => {
